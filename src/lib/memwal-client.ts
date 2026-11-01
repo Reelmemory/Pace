@@ -4,6 +4,7 @@ export type PaceMemoryMode = "mainnet" | "mock";
 
 const globalForMemWal = globalThis as unknown as {
   memwalMockInstance?: ReturnType<typeof MemWalMock.create>;
+  memwalMainnetInstance?: ReturnType<typeof MemWal.create>;
 };
 
 export function getPaceMemoryConfig() {
@@ -34,15 +35,33 @@ export function getMemWalClient() {
   const cfg = getPaceMemoryConfig();
 
   if (cfg.activeMode === "mainnet") {
+    if (!globalForMemWal.memwalMainnetInstance) {
+      try {
+        globalForMemWal.memwalMainnetInstance = MemWal.create({
+          key: cfg.privateKey,
+          accountId: cfg.accountId,
+          serverUrl: cfg.serverUrl,
+          namespace: cfg.namespace,
+        });
+      } catch {
+        // Fallback to mock instance if network client initialization fails
+        if (!globalForMemWal.memwalMockInstance) {
+          globalForMemWal.memwalMockInstance = MemWalMock.create({
+            namespace: cfg.namespace,
+          });
+        }
+        return {
+          mode: "mock" as const,
+          namespace: cfg.namespace,
+          client: globalForMemWal.memwalMockInstance,
+        };
+      }
+    }
+
     return {
       mode: "mainnet" as const,
       namespace: cfg.namespace,
-      client: MemWal.create({
-        key: cfg.privateKey,
-        accountId: cfg.accountId,
-        serverUrl: cfg.serverUrl,
-        namespace: cfg.namespace,
-      }),
+      client: globalForMemWal.memwalMainnetInstance,
     };
   }
 
@@ -54,7 +73,7 @@ export function getMemWalClient() {
 
   return {
     mode: "mock" as const,
-    namespace: cfg.namespace,
+      namespace: cfg.namespace,
     client: globalForMemWal.memwalMockInstance,
   };
 }

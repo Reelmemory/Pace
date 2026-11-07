@@ -193,9 +193,15 @@ export default function PaceDashboardPage() {
           />
         </div>
 
-        <p className="text-xs text-slate-400 mb-8">
+        <p className="text-xs text-slate-400 mb-2">
           Learned: {metrics.learnedDroughtDays}-day drought · ${metrics.dailyBurnUsd}/day burn · ${metrics.upcomingLiabilityUsd} bills reserved
         </p>
+
+        {(data?.totalMemoriesStored ?? 0) < 5 && (
+          <p className="text-xs text-amber-400/80 mb-6">
+            Seed memories to see the full learning effect and protected amount.
+          </p>
+        )}
 
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
@@ -273,7 +279,9 @@ export default function PaceDashboardPage() {
               <div className="flex justify-between text-slate-400">
                 <span>Protected more than cold start</span>
                 <span className="text-emerald-400 font-medium">
-                  ${data?.comparison?.overSweepPreventedUsd ?? 0}
+                  {data?.comparison?.overSweepPreventedUsd
+                    ? `$${data.comparison.overSweepPreventedUsd}`
+                    : "—"}
                 </span>
               </div>
               {latestMemory && (
@@ -294,9 +302,12 @@ export default function PaceDashboardPage() {
             <p>Mode: {data?.mode ?? "mock"}</p>
             <p>Memories stored: {data?.totalMemoriesStored ?? 0}</p>
             <p>Sequence version: {data?.latestSequenceVersion ?? 0}</p>
-            <p className="mt-2">Walrus Memory + Tatum Sui RPCs power the learning loop.</p>
+            <p className="mt-2 text-slate-300">
+              These memories are written to Walrus and change how Pace protects cash on the next payout.
+            </p>
           </div>
         )}
+
       </main>
     </div>
   );
@@ -317,11 +328,10 @@ function MetricCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-5 ${
-        highlight
-          ? "border-emerald-500/40 bg-emerald-950/20"
-          : "border-slate-800 bg-slate-900/40"
-      }`}
+      className={`rounded-2xl border p-5 ${highlight
+        ? "border-emerald-500/40 bg-emerald-950/20"
+        : "border-slate-800 bg-slate-900/40"
+        }`}
     >
       <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
         <span>{label}</span>

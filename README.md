@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ Pace
 
-## Getting Started
+**Adaptive cash-flow pacing for irregular earners — the blockchain stays invisible.**
 
-First, run the development server:
+Pace learns your drought intervals, daily burn, and bill clusters from Walrus Memory, then automatically protects your runway and sweeps only true surplus. Built for freelancers, bounty hunters, and traders on the Walrus x Tatum: Total Recall hackathon.
+
+---
+
+## Live Demo
+
+| Link | Description |
+|------|-------------|
+| **Live App** | [Add your Vercel URL here] |
+| **Demo Video** | [Add YouTube link here] |
+| **GitHub** | [github.com/Reelmemory/Pace](https://github.com/Reelmemory/Pace) |
+
+---
+
+## Judge’s 60-Second Path
+
+1. Open the app.
+2. Click **Replay 60-Day Feast/Famine Cycle** (seeds 10 Walrus memories).
+3. Watch the metrics update: learned drought days, daily burn, and confidence score rise.
+4. Click **Log Bounty Payout** — see how much is locked for runway vs swept as surplus.
+5. Click **Test Self-Swap** — notice $0 is swept (counterparty filtering).
+6. Toggle **Judge Inspector** to see the Walrus + Tatum proof under the hood.
+7. Compare the **Before vs After** panel — memory visibly changes the allocation.
+
+---
+
+## The Problem
+
+Irregular earners (bounty hunters, freelancers, traders) face feast-or-famine cash flow. Traditional budgeting tools assume a steady paycheck. Crypto tools usually force users to manage wallets and gas themselves.
+
+Pace solves this by:
+- Learning real drought patterns and burn rate over time
+- Automatically protecting a runway reserve
+- Only sweeping true surplus
+- Keeping the blockchain completely invisible to the user
+
+---
+
+## How It Works
+
+### 1. Learns from Walrus Memory
+Stores encrypted episodes of payouts, droughts, bill clusters, and user overrides. Each new memory updates the pacing model.
+
+### 2. Feast-or-Famine Router
+Runway Reserve = (Learned Drought Days × Daily Burn) + Upcoming Bills + Safety Floor
+True Surplus   = max(0, Available Cash − Runway Reserve)
+text
+
+### 3. Invisible Blockchain
+Users never see wallet prompts or gas. Walrus Memory + Tatum Sui RPCs run in the background.
+
+### 4. Before / After Proof
+The dashboard shows side-by-side how a cold-start allocation differs from the learned one — proving memory changes behavior.
+
+---
+
+## Network & Integration
+
+| Component | Details |
+|-----------|---------|
+| **Memory** | Walrus Memory (`@mysten-incubation/memwal`) on Mainnet |
+| **Chain data** | Tatum Sui RPC |
+| **Frontend** | Next.js 16 + React 19 + Tailwind |
+| **Required memories** | 10+ on Mainnet (seed button handles this) |
+
+---
+
+## Local Development
 
 ```bash
+git clone https://github.com/Reelmemory/Pace.git
+cd Pace
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Limitations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Currently focused on bounty / freelance cash-flow patterns
+Live Mainnet memory writes require proper Walrus credentials
+Sweep execution is simulated for the demo (full Sui settlement can be added)
+Multi-currency support is not yet implemented
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Built With
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 16, React 19, Tailwind CSS
+Walrus Memory (memwal)
+Tatum Sui RPCs
+Recharts (visualizations)

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -39,9 +40,9 @@ interface PaceApiResponse {
   activeMetrics: PaceMemoryMetrics;
   currentAllocation: AllocationBreakdown;
   comparison?: {
-    coldStartAllocation: AllocationBreakdown;
-    learnedAllocation: AllocationBreakdown;
+    overSweepPreventedUsd: number;
   };
+  history?: Array<{ summaryText: string }>;
 }
 
 export default function PaceDashboardPage() {
@@ -111,10 +112,10 @@ export default function PaceDashboardPage() {
   };
 
   const alloc = data?.currentAllocation;
+  const latestMemory = data?.history?.[0]?.summaryText;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* Header */}
       <header className="border-b border-slate-800">
         <div className="mx-auto max-w-6xl px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -124,7 +125,7 @@ export default function PaceDashboardPage() {
             <div>
               <h1 className="text-xl font-semibold tracking-tight">Pace</h1>
               <p className="text-xs text-slate-400">
-                Adaptive cash-flow for irregular earners
+                Protects airdrop farmers & bounty hunters from long dry spells
               </p>
             </div>
           </div>
@@ -148,18 +149,16 @@ export default function PaceDashboardPage() {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-8">
-        {/* Judge path banner */}
         <div className="mb-8 rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-5 py-4">
           <p className="text-sm font-medium text-emerald-300 mb-1">Judge’s 60-Second Path</p>
           <ol className="text-xs text-slate-300 space-y-1 list-decimal list-inside">
-            <li>Click <strong>Seed 60-Day Cycle</strong> below</li>
-            <li>Watch the numbers update (drought days, confidence, surplus)</li>
-            <li>Click <strong>Log Bounty Payout</strong> to see runway vs sweep</li>
-            <li>Toggle Inspector to see Walrus proof</li>
+            <li>Click <strong>Replay 60-Day Airdrop Cycle</strong></li>
+            <li>Watch learned drought days and confidence rise</li>
+            <li>Click <strong>Log Bounty Payout</strong></li>
+            <li>See how much more was protected vs a cold start</li>
           </ol>
         </div>
 
-        {/* Status */}
         {statusBanner && (
           <div className="mb-6 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-950/30 px-4 py-3 text-sm text-emerald-200">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -167,8 +166,7 @@ export default function PaceDashboardPage() {
           </div>
         )}
 
-        {/* Key metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <MetricCard
             icon={<Wallet className="h-4 w-4 text-emerald-400" />}
             label="Safe to spend"
@@ -195,7 +193,10 @@ export default function PaceDashboardPage() {
           />
         </div>
 
-        {/* Actions */}
+        <p className="text-xs text-slate-400 mb-8">
+          Learned: {metrics.learnedDroughtDays}-day drought · ${metrics.dailyBurnUsd}/day burn · ${metrics.upcomingLiabilityUsd} bills reserved
+        </p>
+
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
             <h2 className="text-sm font-medium mb-4 flex items-center gap-2">
@@ -209,7 +210,7 @@ export default function PaceDashboardPage() {
               className="w-full mb-3 flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400 disabled:opacity-50"
             >
               <Zap className="h-4 w-4" />
-              {busyAction === "seed" ? "Seeding..." : "Seed 60-Day Cycle (10 Memories)"}
+              {busyAction === "seed" ? "Seeding..." : "Replay 60-Day Airdrop Cycle (10 Memories)"}
             </button>
 
             <div className="grid grid-cols-2 gap-2">
@@ -249,7 +250,6 @@ export default function PaceDashboardPage() {
             </div>
           </div>
 
-          {/* Before / After */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
             <h2 className="text-sm font-medium mb-4 flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-sky-400" />
@@ -270,6 +270,17 @@ export default function PaceDashboardPage() {
                   {Math.round(metrics.confidenceScore * 100)}%
                 </span>
               </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Protected more than cold start</span>
+                <span className="text-emerald-400 font-medium">
+                  ${data?.comparison?.overSweepPreventedUsd ?? 0}
+                </span>
+              </div>
+              {latestMemory && (
+                <div className="pt-3 border-t border-slate-800 text-xs text-slate-400">
+                  <span className="text-slate-500">Latest memory:</span> {latestMemory}
+                </div>
+              )}
               <div className="pt-3 border-t border-slate-800 text-xs text-slate-400">
                 {alloc?.explanation || "Seed memories to see how Pace adapts."}
               </div>
@@ -277,7 +288,6 @@ export default function PaceDashboardPage() {
           </div>
         </div>
 
-        {/* Inspector */}
         {showInspector && (
           <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-5 text-xs text-slate-400">
             <p className="font-medium text-slate-200 mb-2">Under the hood</p>

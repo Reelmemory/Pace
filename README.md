@@ -10,8 +10,8 @@ Pace uses Walrus Memory to track real drought intervals, daily burn, and bill cl
 
 | Link | Description |
 |------|-------------|
-| **Live App** | [Add your Vercel URL] |
-| **Demo Video** | [Add YouTube link] |
+| **Live App** | [https://pace-memory.vercel.app/] |
+| **Demo Video** | [https://youtu.be/Scn9xSWZPSw] |
 | **Repo** | [github.com/Reelmemory/Pace](https://github.com/Reelmemory/Pace) |
 
 ---
